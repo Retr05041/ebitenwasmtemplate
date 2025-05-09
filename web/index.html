@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ebiten WASM Template</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <h1>Ebiten Game Running in WebAssembly</h1>
+    <canvas id="gameCanvas" width="640" height="480"></canvas>
+    <script src="wasm_exec.js"></script> <!-- Path to wasm_exec.js -->
+    <script>
+        const go = new Go(); // Go instance required for running WASM
+
+        // Fetch and instantiate the WASM file
+        WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(result => {
+            // Run Go (this starts the Ebiten game loop)
+            go.run(result.instance);
+        }).catch(err => {
+            console.error("Error loading WASM:", err);
+        });
+        
+        // Resize canvas to match window size
+        function resizeCanvas() {
+        const canvas = document.getElementById("gameCanvas");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("load", resizeCanvas);
+    </script>
+</body>
+</html>
